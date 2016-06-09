@@ -1,15 +1,31 @@
+use std::mem::zeroed;
+use std::ptr::copy;
+
 pub type sig_atomic_t = ::int_t;
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct sigset_t {
     _data: [::ulong_t; 16usize],
+}
+
+impl Clone for sigset_t {
+    fn clone(&self) -> Self {
+        let mut _data : [u64; 16usize] = unsafe { zeroed() };
+        unsafe { copy(self._data.as_ptr(), _data.as_mut_ptr(), 16usize); };
+        return sigset_t {
+            _data : _data,
+        };
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        unsafe { copy(source._data.as_ptr(), self._data.as_mut_ptr(), 16usize); };
+    }
 }
 
 new!(sigset_t);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigevent {
     pub sigev_value: sigval,
     pub sigev_signo: ::int_t,
@@ -22,7 +38,7 @@ pub struct sigevent {
 new!(sigevent);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigval {
     _data: [u64; 1usize],
 }
@@ -48,7 +64,7 @@ impl sigval {
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigaction {
     hlr: [u64; 1usize],
     pub sa_mask: sigset_t,
@@ -69,18 +85,18 @@ impl sigaction {
     }
 
     pub fn sa_handler_mut(&mut self) ->
-            &mut ::std::option::Option<extern fn(arg1: ::int_t)> {
-        unsafe { ::std::mem::transmute(&self.hlr) }
+        &mut ::std::option::Option<extern fn(arg1: ::int_t)> {
+            unsafe { ::std::mem::transmute(&mut self.hlr) }
     }
 
     pub fn sa_sigaction_mut(&mut self) ->
             &mut ::std::option::Option<extern fn (arg1: ::int_t, arg2: *mut siginfo_t, arg3: *mut ::void_t)> {
-        unsafe { ::std::mem::transmute(&self.hlr) }
+        unsafe { ::std::mem::transmute(&mut self.hlr) }
     }
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct mcontext_t {
     _data: [u64; 32],
 }
@@ -88,7 +104,6 @@ pub struct mcontext_t {
 new!(mcontext_t);
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct ucontext {
     pub uc_flags: ::ulong_t,
     pub uc_link: *mut ucontext,
@@ -98,10 +113,35 @@ pub struct ucontext {
     _data: [u64; 64],
 }
 
+impl Clone for ucontext {
+    fn clone(&self) -> Self {
+        let mut _data : [u64; 64] = unsafe { zeroed() };
+        unsafe { copy(self._data.as_ptr(), _data.as_mut_ptr(), 64); };
+        return ucontext {
+            uc_flags: self.uc_flags,
+            uc_link: self.uc_link,
+            uc_stack: self.uc_stack.clone(),
+            uc_mcontext: self.uc_mcontext.clone(),
+            uc_sigmask: self.uc_sigmask.clone(),
+            _data : _data,
+        };
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        self.uc_flags =    source.uc_flags.clone();
+        self.uc_link  =    source.uc_link.clone();
+        self.uc_stack =    source.uc_stack.clone();
+        self.uc_mcontext = source.uc_mcontext.clone();
+        self.uc_sigmask =  source.uc_sigmask.clone();
+        unsafe { copy(source._data.as_ptr(), self._data.as_mut_ptr(), 64); };
+    }
+}
+
+
 new!(ucontext);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct stack_t {
     pub ss_sp: *mut ::void_t,
     pub ss_flags: ::int_t,
@@ -111,7 +151,7 @@ pub struct stack_t {
 new!(stack_t);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct siginfo_t {
     pub si_signo: ::int_t,
     pub si_errno: ::int_t,
@@ -128,7 +168,7 @@ impl siginfo_t {
     }
 
     pub fn si_pid_mut(&mut self) -> &mut ::sys::types::pid_t {
-        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_pid
     }
 
@@ -138,7 +178,7 @@ impl siginfo_t {
     }
 
     pub fn si_uid_mut(&mut self) -> &mut ::sys::types::uid_t {
-        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_uid
     }
 
@@ -148,7 +188,7 @@ impl siginfo_t {
     }
 
     pub fn si_addr_mut(&mut self) -> &mut *mut ::void_t {
-        let tmp: &mut _sigfault = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _sigfault = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_addr
     }
 
@@ -158,7 +198,7 @@ impl siginfo_t {
     }
 
     pub fn si_status_mut(&mut self) -> &mut ::int_t {
-        let tmp: &mut _sigchld = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _sigchld = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_status
     }
 
@@ -168,7 +208,7 @@ impl siginfo_t {
     }
 
     pub fn si_band_mut(&mut self) -> &mut ::long_t {
-        let tmp: &mut _sigpoll = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _sigpoll = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_band
     }
 
@@ -178,13 +218,13 @@ impl siginfo_t {
     }
 
     pub fn si_value_mut(&mut self) -> &mut sigval {
-        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&self._data) };
+        let tmp: &mut _rt = unsafe { ::std::mem::transmute(&mut self._data) };
         &mut tmp.si_sigval
     }
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 struct _rt {
     si_pid: ::sys::types::pid_t,
     si_uid: ::sys::types::uid_t,
@@ -192,7 +232,7 @@ struct _rt {
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 struct _sigchld {
     si_pid: ::sys::types::pid_t,
     si_uid: ::sys::types::uid_t,
@@ -200,14 +240,14 @@ struct _sigchld {
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 struct _sigfault {
     si_addr: *mut ::void_t,
     si_addr_lsb: ::short_t,
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 struct _sigpoll {
     si_band: ::long_t,
 }
@@ -217,7 +257,7 @@ pub fn SIG_DFL() -> extern fn(::int_t) {
 }
 
 pub fn SIG_ERR() -> extern fn(::int_t) {
-    unsafe { ::std::mem::transmute::<usize,_>(-1) }
+    unsafe { ::std::mem::transmute::<usize,_>(!0) }
 }
 
 pub fn SIG_IGN() -> extern fn(::int_t) {

@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct datum {
     pub dptr: *mut ::char_t,
     pub dsize: ::int_t,

@@ -1,5 +1,3 @@
-use std::num::Int;
-
 pub type in_port_t = u16;
 pub type in_addr_t = u32;
 
@@ -7,7 +5,7 @@ pub const INADDR_ANY:       in_addr_t = 0x00000000;
 pub const INADDR_BROADCAST: in_addr_t = 0xffffffff;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct in_addr {
     pub s_addr: in_addr_t,
 }
@@ -33,7 +31,7 @@ pub const IPV6_UNICAST_HOPS:   ::int_t = 16;
 pub const IPV6_V6ONLY:         ::int_t = 26;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct in6_addr {
     pub data: [u32; 4usize],
 }
@@ -44,11 +42,11 @@ impl ::AsSlice for in6_addr { }
 impl ::AsMutSlice for in6_addr { }
 
 pub fn IN6_IS_ADDR_UNSPECIFIED(a: &in6_addr) -> bool {
-    a.data.as_slice() == [0; 4].as_slice()
+    a.data == [0; 4]
 }
 
 pub fn IN6_IS_ADDR_LOOPBACK(a: &in6_addr) -> bool {
-    a.data.as_slice() == [0, 0, 0, 1u32.to_be()].as_slice()
+    a.data == [0, 0, 0, 1u32.to_be()]
 }
 
 pub fn IN6_IS_ADDR_MULTICAST(a: &in6_addr) -> bool {
@@ -68,7 +66,7 @@ pub fn IN6_IS_ADDR_V4MAPPED(a: &in6_addr) -> bool {
 }
 
 pub fn IN6_IS_ADDR_V4COMPAT(a: &in6_addr) -> bool {
-    a.data[0] == 0 && a.data[1] == 0 && a.data[2] == 0 && Int::from_be(a.data[3]) > 1
+    a.data[0] == 0 && a.data[1] == 0 && a.data[2] == 0 && u32::from_be(a.data[3]) > 1
 }
 
 pub fn IN6_IS_ADDR_MC_NODELOCAL(a: &in6_addr) -> bool {
@@ -120,7 +118,7 @@ impl in6_addr {
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sockaddr_in {
     pub sin_family: ::sys::socket::sa_family_t,
     pub sin_port: in_port_t,
@@ -134,7 +132,7 @@ impl ::AsSlice for sockaddr_in { }
 impl ::AsMutSlice for sockaddr_in { }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sockaddr_in6 {
     pub sin6_family: ::sys::socket::sa_family_t,
     pub sin6_port: in_port_t,
@@ -149,7 +147,7 @@ impl ::AsSlice for sockaddr_in6 { }
 impl ::AsMutSlice for sockaddr_in6 { }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct ipv6_mreq {
     pub ipv6mr_multiaddr: in6_addr,
     pub ipv6mr_interface: ::uint_t,

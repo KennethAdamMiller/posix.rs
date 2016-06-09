@@ -57,15 +57,15 @@ pub enum MutInAddr<'a> {
     MutInet6(&'a mut in6_addr),
 }
 
-pub fn inet_pton(dst: &MutInAddr, src: &::NTStr) -> int_t {
+pub fn inet_pton(dst: &mut MutInAddr, src: &::NTStr) -> int_t {
     extern {
         fn inet_pton(af: int_t, cp: *const char_t, buf: *mut void_t) -> int_t;
     }
     unsafe {
         match *dst {
-            MutInAddr::MutInet4(ref v) => inet_pton(AF_INET, src.as_ptr(),
+            MutInAddr::MutInet4(ref mut v) => inet_pton(AF_INET, src.as_ptr(),
                                                     *v as *mut _ as *mut _),
-            MutInAddr::MutInet6(ref v) => inet_pton(AF_INET6, src.as_ptr(),
+            MutInAddr::MutInet6(ref mut v) => inet_pton(AF_INET6, src.as_ptr(),
                                                     *v as *mut _ as *mut _),
         }
     }

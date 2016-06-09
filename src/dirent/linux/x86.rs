@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct dirent {
     pub d_ino: ::sys::types::ino_t,
     pub d_off: ::sys::types::off_t,
@@ -9,7 +9,7 @@ pub struct dirent {
 }
 new!(dirent);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct DIR {
     _dummy: (),
 }

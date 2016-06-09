@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct if_nameindex {
     pub if_index: ::uint_t,
     pub if_name: *mut ::char_t,

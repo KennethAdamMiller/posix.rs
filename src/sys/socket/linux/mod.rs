@@ -43,7 +43,6 @@ pub use self::arch::{AF_INET};
 pub use self::arch::{AF_INET6};
 pub use self::arch::{AF_UNIX};
 pub use self::arch::{AF_UNSPEC};
-pub use self::arch::{CMSG_NXTHDR};
 pub use self::arch::{CMSG_FIRSTHDR};
 pub use self::arch::{CMSG_DATA};
 

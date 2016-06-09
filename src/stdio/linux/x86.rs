@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct FILE {
     _flags: [u32; 1],
     _IO_read_ptr: [u32; 1],

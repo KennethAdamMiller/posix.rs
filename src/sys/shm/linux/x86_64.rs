@@ -1,7 +1,7 @@
 pub type shmatt_t = ::ulong_t;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct shmid_ds {
     pub shm_perm: ::sys::ipc::ipc_perm,
     pub shm_segsz: ::size_t,
@@ -21,6 +21,6 @@ pub const SHM_RDONLY: ::int_t = 4096;
 pub const SHM_RND:    ::int_t = 8192;
 
 pub fn SHMLBA() -> ::int_t {
-    extern { fn __getpagesize() -> ::int_t; }
-    unsafe { __getpagesize() }
+    extern { fn getpagesize() -> ::int_t; }
+    unsafe { getpagesize() }
 }

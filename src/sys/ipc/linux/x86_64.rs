@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct ipc_perm {
     __key: ::sys::types::key_t,
     pub uid: ::sys::types::uid_t,

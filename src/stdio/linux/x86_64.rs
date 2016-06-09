@@ -1,11 +1,11 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct FILE {
     _data: [u64; 27],
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct fpos_t {
     _data: [u64; 2],
 }

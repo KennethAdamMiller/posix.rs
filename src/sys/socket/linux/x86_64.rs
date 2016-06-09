@@ -1,3 +1,6 @@
+use std::mem::zeroed;
+use std::ptr::copy;
+
 pub type socklen_t = ::uint_t;
 pub type sa_family_t = ::ushort_t;
 
@@ -9,7 +12,7 @@ pub const SOCK_SEQPACKET: ::uint_t = 5;
 pub const SOL_SOCKET: ::int_t = 1;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sockaddr {
     pub sa_family: sa_family_t,
     pub sa_data: [::char_t; 14usize],
@@ -21,12 +24,30 @@ impl ::AsMutSlice for sockaddr { }
 new!(sockaddr);
 
 #[repr(C)]
-#[derive(Copy)]
 pub struct sockaddr_storage {
     pub ss_family: sa_family_t,
     __ss_align: ::ulong_t,
     __ss_padding: [::char_t; 112usize],
 }
+
+impl Clone for sockaddr_storage {
+    fn clone(&self) -> Self {
+        let mut __ss_padding : [::char_t; 112usize] = unsafe { zeroed() };
+        unsafe { copy(self.__ss_padding.as_ptr(), __ss_padding.as_mut_ptr(), 112usize); };
+        return sockaddr_storage {
+            ss_family    : self.ss_family,
+            __ss_align   : self.__ss_align,
+            __ss_padding : __ss_padding,
+        };
+    }
+
+    fn clone_from(&mut self, source: &Self) {
+        self.ss_family  = source.ss_family;
+        self.__ss_align = source.__ss_align;
+        unsafe { copy(source.__ss_padding.as_ptr(), self.__ss_padding.as_mut_ptr(), 112usize); };
+    }
+}
+
 
 new!(sockaddr_storage);
 
@@ -43,7 +64,7 @@ pub const MSG_WAITALL: ::uint_t = 256;
 pub const MSG_NOSIGNAL: ::uint_t = 16384;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct msghdr {
     pub msg_name: *mut ::void_t,
     pub msg_namelen: socklen_t,
@@ -56,14 +77,14 @@ pub struct msghdr {
 
 new!(msghdr);
 
-pub fn CMSG_NXTHDR<'a>(msghdr: &'a mut msghdr,
+/*pub fn CMSG_NXTHDR<'a>(msghdr: &'a mut msghdr,
                        cmsghdr: &mut cmsghdr) -> Option<&'a mut cmsghdr> {
-    extern { fn __cmsg_nxthdr(mhdr: *mut msghdr, cmsg: *mut cmsghdr) -> *mut cmsghdr; }
-    match unsafe { __cmsg_nxthdr(msghdr as *mut _, cmsghdr as *mut _) as usize } {
+    extern { fn cmsg_nxthdr(mhdr: *mut msghdr, cmsg: *mut cmsghdr) -> *mut cmsghdr; }
+    match unsafe { cmsg_nxthdr(msghdr as *mut _, cmsghdr as *mut _) as usize } {
         0 => None,
         n => unsafe { Some(::std::mem::transmute(n as *mut cmsghdr)) },
     }
-}
+}*/
 
 pub fn CMSG_FIRSTHDR<'a>(hdr: &'a msghdr) -> Option<&'a cmsghdr> {
     if hdr.msg_controllen as usize >= ::std::mem::size_of::<cmsghdr>() {
@@ -74,7 +95,7 @@ pub fn CMSG_FIRSTHDR<'a>(hdr: &'a msghdr) -> Option<&'a cmsghdr> {
 }
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct cmsghdr {
     pub cmsg_len: ::size_t,
     pub cmsg_level: ::int_t,
@@ -110,7 +131,7 @@ pub const SO_TYPE:       ::int_t = 3;
 pub const SOMAXCONN: ::int_t = 128;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct linger {
     pub l_onoff: ::int_t,
     pub l_linger: ::int_t,

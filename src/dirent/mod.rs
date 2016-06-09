@@ -67,7 +67,7 @@ mod tests {
         let tmp = TempDir::new("").unwrap();
         let mut tmp_path = tmp.path().clone();
         tmp_path.push("xxx");
-        for i in [0u, 1, 2].iter() {
+        for i in [0, 1, 2].iter() {
             tmp_path.set_filename(format!("{}", i));
             ::std::io::fs::File::create(&tmp_path).unwrap();
         }
@@ -75,7 +75,7 @@ mod tests {
         let dirp = super::opendir(&path);
         let mut ent = super::dirent::new();
         let mut res = 1;
-        for _ in range(0u, 2) {
+        for _ in range(0, 2) {
             for (i, _) in [".", "..", "0", "1", "2", "3"].iter().enumerate() {
                 assert!(super::readdir_r(dirp, &mut ent, &mut res) != -1);
                 if res == 0 {

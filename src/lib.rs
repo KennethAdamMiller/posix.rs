@@ -1,14 +1,12 @@
 #![crate_name = "posix"]
-#![crate_type = "lib"]
-#![feature(core, path, std_misc)]
+//#![crate_type = "lib"]
+#![feature(link_args, raw, const_fn)]
 #![allow(non_camel_case_types)]
-#![allow(raw_pointer_derive)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 
 use std::path::{Path};
-use std::ffi::{AsOsStr};
-use std::os::unix::{OsStrExt};
+use std::os::unix::ffi::{OsStrExt};
 
 pub use os::arch::{char_t, schar_t, uchar_t, short_t, ushort_t, int_t, uint_t, long_t};
 pub use os::arch::{ulong_t, longlong_t, ulonglong_t, float_t, double_t, size_t, ssize_t}; 
@@ -35,7 +33,7 @@ pub mod dlfcn;
 pub mod errno;
 pub mod fcntl;
 pub mod fenv;
-pub mod float;
+//pub mod float;
 pub mod fmtmsg;
 pub mod fnmatch;
 pub mod ftw;
@@ -49,7 +47,7 @@ pub mod limits;
 pub mod locale;
 pub mod monetary;
 pub mod mqueue;
-pub mod ndbm;
+//pub mod ndbm;
 pub mod net;
 pub mod netdb;
 pub mod netinet;
@@ -69,7 +67,7 @@ pub mod stdio;
 pub mod stdlib;
 pub mod string;
 pub mod strings;
-pub mod stropts;
+//pub mod stropts;
 pub mod signal;
 pub mod sys;
 pub mod syslog;
@@ -85,7 +83,7 @@ pub mod wctype;
 pub mod wordexp;
 
 #[repr(u8)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub enum void_t {
     __variant1,
     __variant2,
@@ -195,10 +193,10 @@ impl<'a> AsNTStr<'a> for &'a [u8] {
 pub trait AsSlice: Sized {
     fn as_slice(&self) -> &[u8] {
         unsafe {
-            ::std::mem::transmute(::std::raw::Slice {
-                data: self as *const _ as *const u8,
-                len: ::std::mem::size_of_val(self),
-            })
+            ::std::mem::transmute(::std::slice::from_raw_parts( 
+                self as *const _ as *const u8,
+                ::std::mem::size_of_val(self))
+            )
         }
     }
 }
@@ -206,10 +204,10 @@ pub trait AsSlice: Sized {
 pub trait AsMutSlice: Sized {
     fn as_mut_slice(&mut self) -> &mut [u8] {
         unsafe {
-            ::std::mem::transmute(::std::raw::Slice {
-                data: self as *mut _ as *const u8,
-                len: ::std::mem::size_of_val(self),
-            })
+            ::std::mem::transmute(::std::slice::from_raw_parts_mut (
+                self as *mut _,
+                ::std::mem::size_of_val(self)
+            ))
         }
     }
 }

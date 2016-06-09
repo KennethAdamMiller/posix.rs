@@ -1,7 +1,7 @@
 pub type mqd_t = ::int_t;
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct mq_attr {
     pub mq_flags: ::long_t,
     pub mq_maxmsg: ::long_t,

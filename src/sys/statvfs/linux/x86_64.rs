@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct statvfs {
     pub f_bsize:   ::ulong_t,
     pub f_frsize:  ::ulong_t,

@@ -196,9 +196,9 @@ pub fn pthread_cancel(th: thread) -> int_t {
     unsafe { pthread_cancel(th) }
 }
 
-pub fn pthread_cond_broadcast(cond: &mut cond) -> int_t {
-    extern { fn pthread_cond_broadcast(cond: *mut cond) -> int_t; }
-    unsafe { pthread_cond_broadcast(cond as *mut _) }
+pub fn pthread_cond_broadcast(cond: & cond) -> int_t {
+    extern { fn pthread_cond_broadcast(cond: *const cond) -> int_t; }
+    unsafe { pthread_cond_broadcast(cond as *const _) }
 }
 
 pub fn pthread_cond_destroy(cond: &mut cond) -> int_t {
@@ -212,9 +212,9 @@ pub fn pthread_cond_init(cond: &mut cond, cond_attr: &condattr) -> int_t {
     unsafe { pthread_cond_init(cond as *mut _, cond_attr as *const _) }
 }
 
-pub fn pthread_cond_signal(cond: &mut cond) -> int_t {
-    extern { fn pthread_cond_signal(cond: *mut cond) -> int_t; }
-    unsafe { pthread_cond_signal(cond as *mut _) }
+pub fn pthread_cond_signal(cond: & cond) -> int_t {
+    extern { fn pthread_cond_signal(cond: *const cond) -> int_t; }
+    unsafe { pthread_cond_signal(cond as *const _) }
 }
 
 pub fn pthread_cond_timedwait(cond: &mut cond, mutex: &mut mutex,
@@ -225,9 +225,9 @@ pub fn pthread_cond_timedwait(cond: &mut cond, mutex: &mut mutex,
                                     abstime as  *const _) }
 }
 
-pub fn pthread_cond_wait(cond: &mut cond, mutex: &mut mutex) -> int_t {
-    extern { fn pthread_cond_wait(cond: *mut cond, mutex: *mut mutex) -> int_t; }
-    unsafe { pthread_cond_wait(cond as *mut _, mutex as *mut _) }
+pub fn pthread_cond_wait(cond: & cond, mutex: & mutex) -> int_t {
+    extern { fn pthread_cond_wait(cond: *const cond, mutex: *const mutex) -> int_t; }
+    unsafe { pthread_cond_wait(cond as *const _, mutex as *const _) }
 }
 
 pub fn pthread_condattr_destroy(attr: &mut condattr) -> int_t {
@@ -319,9 +319,9 @@ pub fn pthread_mutex_init(mutex: &mut mutex, mutexattr: &mutexattr) -> int_t {
     unsafe { pthread_mutex_init(mutex as *mut _, mutexattr as *const _) }
 }
 
-pub fn pthread_mutex_lock(mutex: &mut mutex) -> int_t {
-    extern { fn pthread_mutex_lock(mutex: *mut mutex) -> int_t; }
-    unsafe { pthread_mutex_lock(mutex as *mut mutex) }
+pub fn pthread_mutex_lock(mutex: & mutex) -> int_t {
+    extern { fn pthread_mutex_lock(mutex: *const mutex) -> int_t; }
+    unsafe { pthread_mutex_lock(mutex as *const mutex) }
 }
 
 pub fn pthread_mutex_setprioceiling(mutex: &mut mutex, prioceiling: int_t,
@@ -332,19 +332,19 @@ pub fn pthread_mutex_setprioceiling(mutex: &mut mutex, prioceiling: int_t,
                                              old_ceiling as *mut _) }
 }
 
-pub fn muteximedlock(mutex: &mut mutex, abstime: &timespec) -> int_t {
-    extern { fn muteximedlock(mutex: *mut mutex, abstime: *const timespec) -> int_t; }
-    unsafe { muteximedlock(mutex as *mut _, abstime as *const _) }
+pub fn pthread_mutex_timed_lock(mutex: &mut mutex, abstime: &timespec) -> int_t {
+    extern { fn pthread_mutex_timed_lock(mutex: *mut mutex, abstime: *const timespec) -> int_t; }
+    unsafe { pthread_mutex_timed_lock(mutex as *mut _, abstime as *const _) }
 }
 
-pub fn mutexrylock(mutex: &mut mutex) -> int_t {
-    extern { fn mutexrylock(mutex: *mut mutex) -> int_t; }
-    unsafe { mutexrylock(mutex as *mut _) }
+pub fn pthread_mutex_trylock(mutex: &mut mutex) -> int_t {
+    extern { fn pthread_mutex_trylock(mutex: *mut mutex) -> int_t; }
+    unsafe { pthread_mutex_trylock(mutex as *mut _) }
 }
 
-pub fn pthread_mutex_unlock(mutex: &mut mutex) -> int_t {
-    extern { fn pthread_mutex_unlock(mutex: *mut mutex) -> int_t; }
-    unsafe { pthread_mutex_unlock(mutex as *mut _) }
+pub fn pthread_mutex_unlock(mutex: & mutex) -> int_t {
+    extern { fn pthread_mutex_unlock(mutex: *const mutex) -> int_t; }
+    unsafe { pthread_mutex_unlock(mutex as *const _) }
 }
 
 pub fn pthread_mutexattr_destroy(attr: &mut mutexattr) -> int_t {
@@ -440,24 +440,19 @@ pub fn pthread_rwlock_rdlock(rwlock: &mut rwlock) -> int_t {
     unsafe { pthread_rwlock_rdlock(rwlock as *mut _) }
 }
 
-pub fn rwlockimedrdlock(rwlock: &mut rwlock, abstime: &timespec) -> int_t {
-    extern { fn rwlockimedrdlock(rwlock: *mut rwlock, abstime: *const timespec) -> int_t; }
-    unsafe { rwlockimedrdlock(rwlock as *mut _, abstime as *const _) }
+pub fn pthread_rwlock_timedwrlock(rwlock: *mut rwlock, abstime: *const timespec) -> int_t {
+    extern { fn pthread_rwlock_timedwrlock(rwlock: *mut rwlock, abstime: *const timespec) -> int_t; }
+    unsafe { pthread_rwlock_timedwrlock(rwlock as *mut _, abstime as *const _) }
 }
 
-pub fn rwlockimedwrlock(rwlock: *mut rwlock, abstime: *const timespec) -> int_t {
-    extern { fn rwlockimedwrlock(rwlock: *mut rwlock, abstime: *const timespec) -> int_t; }
-    unsafe { rwlockimedwrlock(rwlock as *mut _, abstime as *const _) }
+pub fn pthread_rwlock_tryrdlock(rwlock: &mut rwlock) -> int_t {
+    extern { fn pthread_rwlock_tryrdlock(rwlock: *mut rwlock) -> int_t; }
+    unsafe { pthread_rwlock_tryrdlock(rwlock as *mut _) }
 }
 
-pub fn rwlockryrdlock(rwlock: &mut rwlock) -> int_t {
-    extern { fn rwlockryrdlock(rwlock: *mut rwlock) -> int_t; }
-    unsafe { rwlockryrdlock(rwlock as *mut _) }
-}
-
-pub fn rwlockrywrlock(rwlock: &mut rwlock) -> int_t {
-    extern { fn rwlockrywrlock(rwlock: *mut rwlock) -> int_t; }
-    unsafe { rwlockrywrlock(rwlock as *mut _) }
+pub fn pthread_rwlock_trywrlock(rwlock: &mut rwlock) -> int_t {
+    extern { fn pthread_rwlock_trywrlock(rwlock: *mut rwlock) -> int_t; }
+    unsafe { pthread_rwlock_trywrlock(rwlock as *mut _) }
 }
 
 pub fn pthread_rwlock_unlock(rwlock: &mut rwlock) -> int_t {
@@ -545,9 +540,9 @@ pub fn pthread_spin_unlock(lock: &mut spinlock) -> int_t {
     unsafe { pthread_spin_unlock(lock as *mut _) }
 }
 
-pub fn threadestcancel() {
-    extern { fn threadestcancel(); }
-    unsafe { threadestcancel() }
+pub fn pthread_pestcancel() {
+    extern { fn pthread_testcancel(); }
+    unsafe { pthread_testcancel() }
 }
 
 extern {

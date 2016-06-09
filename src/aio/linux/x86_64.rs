@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct aiocb {
     pub aio_fildes: ::int_t,
     pub aio_lio_opcode: ::int_t,

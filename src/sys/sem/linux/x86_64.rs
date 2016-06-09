@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct semid_ds {
     pub sem_perm: ::sys::ipc::ipc_perm,
     pub sem_otime: ::sys::types::time_t,
@@ -14,7 +14,7 @@ pub struct semid_ds {
 new!(semid_ds);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sembuf {
     pub sem_num: ::ushort_t,
     pub sem_op: ::short_t,

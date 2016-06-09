@@ -1,7 +1,7 @@
 pub type sig_atomic_t = ::int_t;
 pub type sigset_t = [u32; 32];
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct siginfo_t {
     pub si_signo: ::int_t,
     pub si_errno: ::int_t,
@@ -10,7 +10,7 @@ pub struct siginfo_t {
 }
 new!(siginfo_t);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigval {
     _data: [u32; 1usize],
 }
@@ -33,7 +33,7 @@ impl sigval {
     }
 }
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigevent {
     pub sigev_value: sigval,
     pub sigev_signo: ::int_t,
@@ -44,7 +44,7 @@ pub struct sigevent {
 }
 new!(sigevent);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct sigaction {
     __sigaction_handler: [u32; 1],
     pub sa_mask: sigset_t,
@@ -53,7 +53,7 @@ pub struct sigaction {
 }
 new!(sigaction);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct stack_t {
     pub ss_sp: *mut ::void_t,
     pub ss_flags: ::int_t,
@@ -61,7 +61,7 @@ pub struct stack_t {
 }
 new!(stack_t);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct mcontext_t {
     pub gregs: [::int_t; 19],
     pub fpregs: [u32; 28],
@@ -70,7 +70,7 @@ pub struct mcontext_t {
 }
 new!(mcontext_t);
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct ucontext {
     pub uc_flags: ::ulong_t,
     pub uc_link: *mut ucontext,

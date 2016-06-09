@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct lconv {
     pub decimal_point: *mut ::char_t,
     pub thousands_sep: *mut ::char_t,

@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct timespec {
     pub tv_sec: ::sys::types::time_t,
     pub tv_nsec: i64,
@@ -8,7 +8,7 @@ pub struct timespec {
 new!(timespec);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct tm {
     pub tm_sec: i32,
     pub tm_min: i32,
@@ -26,7 +26,7 @@ pub struct tm {
 new!(tm);
 
 #[repr(C)]
-#[derive(Copy)]
+#[derive(Clone)]
 pub struct itimerspec {
     pub it_interval: timespec,
     pub it_value: timespec,
