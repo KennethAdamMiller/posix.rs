@@ -1,6 +1,6 @@
 #![crate_name = "posix"]
 //#![crate_type = "lib"]
-#![feature(link_args, raw, const_fn)]
+#![feature(link_args, const_fn)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]

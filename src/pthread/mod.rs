@@ -332,9 +332,9 @@ pub fn pthread_mutex_setprioceiling(mutex: &mut mutex, prioceiling: int_t,
                                              old_ceiling as *mut _) }
 }
 
-pub fn pthread_mutex_timed_lock(mutex: &mut mutex, abstime: &timespec) -> int_t {
-    extern { fn pthread_mutex_timed_lock(mutex: *mut mutex, abstime: *const timespec) -> int_t; }
-    unsafe { pthread_mutex_timed_lock(mutex as *mut _, abstime as *const _) }
+pub fn pthread_mutex_timedlock(mutex: &mut mutex, abstime: &timespec) -> int_t {
+    extern { fn pthread_mutex_timedlock(mutex: *mut mutex, abstime: *const timespec) -> int_t; }
+    unsafe { pthread_mutex_timedlock(mutex as *mut _, abstime as *const _) }
 }
 
 pub fn pthread_mutex_trylock(mutex: &mut mutex) -> int_t {
@@ -352,12 +352,12 @@ pub fn pthread_mutexattr_destroy(attr: &mut mutexattr) -> int_t {
     unsafe { pthread_mutexattr_destroy(attr as *mut _) }
 }
 
-pub fn pthread_mutexattr_getprioceiling(attr: &mutexattr,
+/*pub fn pthread_mutexattr_getprioceiling(attr: &mutexattr,
                                         prioceiling: *mut int_t) -> int_t {
     extern { fn pthread_mutexattr_getprioceiling(attr: *const mutexattr,
                                                  prioceiling: *mut int_t) -> int_t; }
     unsafe { pthread_mutexattr_getprioceiling(attr as *const _, prioceiling as *mut _) }
-}
+}*/
 
 pub fn pthread_mutexattr_getprotocol(attr: &mutexattr,
                                      protocol: &mut int_t) -> int_t {
@@ -390,12 +390,12 @@ pub fn pthread_mutexattr_init(attr: &mut mutexattr) -> int_t {
     unsafe { pthread_mutexattr_init(attr as *mut _) }
 }
 
-pub fn pthread_mutexattr_setprioceiling(attr: &mut mutexattr,
+/*pub fn pthread_mutexattr_setprioceiling(attr: &mut mutexattr,
                                             prioceiling: int_t) -> int_t {
     extern { fn pthread_mutexattr_setprioceiling(attr: *mut mutexattr,
                                                  prioceiling: int_t) -> int_t; }
     unsafe { pthread_mutexattr_setprioceiling(attr as *mut _, prioceiling) }
-}
+}*/
 
 pub fn pthread_mutexattr_setprotocol(attr: &mut mutexattr, protocol: int_t) -> int_t {
     extern { fn pthread_mutexattr_setprotocol(attr: *mut mutexattr,
